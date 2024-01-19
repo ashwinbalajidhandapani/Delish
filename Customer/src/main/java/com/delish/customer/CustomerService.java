@@ -1,5 +1,6 @@
 package com.delish.customer;
 
+import com.delish.customer.Exceptions.DataUnchangedException;
 import com.delish.customer.utils.Utility;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -49,6 +51,7 @@ public class CustomerService {
                     .emailid(customer.getEmailid())
                     .phone(customer.getPhone())
                     .username(customer.getUsername())
+                    .password(customer.getPassword())
                     .build();
             return customerRepository.saveAndFlush(customerInfo);
         }
@@ -61,10 +64,37 @@ public class CustomerService {
           "SELECT username, phone FROM customer WHERE emailid=? LIMIT 1",
                 new CustomerRowMapper(), emailId
         );
-        for (Customer c: result) {
-            System.out.println(c.toString());
-        }
+
         return result.stream().findFirst();
+    }
+
+    public Optional<Customer> fetchUserInformationComplete(String emailId){
+        List<Customer> result = jdbcTemplate.query(
+                "SELECT id, username, phone, emailid FROM customer WHERE emailid=? LIMIT 1",
+                new CustomerRowMapperId(), emailId
+        );
+
+        return result.stream().findFirst();
+    }
+
+
+    public void updateUserBasedOnUserEmail(Customer customer){
+        // this makes an initial check if the customer is present within the database and gets information for comparison
+        Customer custInfo = fetchUserInformationComplete(customer.getEmailid()).orElseThrow(() -> new NoSuchElementException("Customer not returned"));
+        if(!custInfo.getUsername().equals(customer.getUsername()) && custInfo.getPhone().equals(customer.getPhone())){
+            // username is changed by the user
+            jdbcTemplate.update("UPDATE customer SET username = ? WHERE emailid=?", customer.getUsername(), customer.getEmailid());
+        }
+
+        else if(custInfo.getUsername().equals(customer.getUsername()) && !custInfo.getPhone().equals(customer.getPhone())){
+            // username is changed by the user
+            jdbcTemplate.update("UPDATE customer SET phone = ? WHERE emailid=?", customer.getPhone(), customer.getEmailid());
+        }
+
+        else if(custInfo.getUsername().equals(customer.getUsername()) && custInfo.getPhone().equals(customer.getPhone())){
+            throw new DataUnchangedException("No change in Data, please make changes to either phone or username");
+        }
+
     }
 
     public static class CustomerRowMapper implements RowMapper<Customer>{
@@ -73,6 +103,19 @@ public class CustomerService {
         public Customer mapRow(ResultSet rs, int rowNum) throws SQLException {
             return Customer.builder()
                     .username(rs.getString("username"))
+                    .phone(rs.getString("phone"))
+                    .build();
+        }
+    }
+
+    public static class CustomerRowMapperId implements RowMapper<Customer>{
+
+        @Override
+        public Customer mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return Customer.builder()
+                    .id(rs.getLong("id"))
+                    .username(rs.getString("username"))
+                    .emailid(rs.getString("emailid"))
                     .phone(rs.getString("phone"))
                     .build();
         }

@@ -15,14 +15,16 @@ import java.util.Optional;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("api/v1/customer")
 public class CustomerController {
     private final CustomerService customerService;
 
-    @GetMapping
+
+    @GetMapping(path = "/all")
     public List<Customer> getAllCustomers(){
         return customerService.retrieveAllCustomers();
     }
+
 
     @PostMapping
     public ResponseEntity<Customer> saveCustomerInfo(@RequestBody Customer customer){
@@ -36,7 +38,7 @@ public class CustomerController {
             }
     }
 
-    @GetMapping(path = "/find")
+    @GetMapping
     public ResponseEntity<Customer> findCustomerBasedOnEmailId(@RequestParam String emailId){
         try{
             Optional<Customer> custInfo= customerService.fetchUserInformation(emailId);
@@ -50,4 +52,17 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @PutMapping
+    public ResponseEntity<Customer> updateCustomerBasedOnEmailId(@RequestBody Customer customer){
+        try{
+            customerService.updateUserBasedOnUserEmail(customer);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch (Exception e){
+            log.warn(e.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
 }

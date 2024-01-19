@@ -7,5 +7,7 @@ CREATE TABLE "customer"(
     "emailid" text NOT NULL UNIQUE,
     "username" text NOT NULL UNIQUE,
     "phone" text NOT NULL UNIQUE,
-    CONSTRAINT "customer_primary_key" PRIMARY KEY ("id")
+    "password" VARCHAR(25) NOT NULL,
+    CONSTRAINT "customer_primary_key" PRIMARY KEY ("id"),
+    CONSTRAINT password_length_check CHECK (char_length(password) >= 8 AND char_length(password) <= 25)
 );
