@@ -64,5 +64,29 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+    @PutMapping("resetPassword")
+    public ResponseEntity<Customer> resetPassword(@RequestBody Customer customer){
+        try{
+            customerService.resetPassword(customer);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch (Exception e){
+            log.warn(e.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Customer> deleteUserBasedOnEmailId(@RequestBody Customer customer){
+        try{
+            customerService.deleteAccount(customer);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch (Exception e){
+            log.warn(e.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+    }
 }

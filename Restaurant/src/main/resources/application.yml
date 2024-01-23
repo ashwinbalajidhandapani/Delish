@@ -1,20 +1,27 @@
 server:
-  port: 8081
+  port: 8083
 spring:
   application:
     name: Restaurant
-#  sql:
-#    init:
-#      mode: always
-#  datasource:
-#    username: 'postgres'
-#    url: jdbc:postgresql://localhost:5432/postgres
-#    password: password@123
-#  jpa:
-#    properties:
-#      hibernate:
-#        dialect: org.hibernate.dialect.PostgreSQLDialect
-#        format_sql: true
-#    hibernate:
-#      ddl-auto: update
-#    show-sql: true
+  sql:
+    init:
+      mode: always
+  datasource:
+    username: 'postgres'
+    url: jdbc:postgresql://localhost:5432/postgres
+    password: password@123
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  mongodb:
+    host: localhost
+    port: 27017
+    database: Menu
+    username: mongouser
+    password: changemeinProd!
+    authentication-database: admin

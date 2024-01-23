@@ -13,8 +13,23 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+  mongo:
+    container_name: mongodb
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongouser
+      - MONGO_INITDB_ROOT_PASSWORD=changemeinProd!
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - mongo
 networks:
   postgres:
     driver: bridge
+  mongo:
+    driver: bridge
 volumes:
   postgres_data:
+  mongodb-data:

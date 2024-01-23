@@ -10,7 +10,8 @@
   <version>1.0-SNAPSHOT</version>
   <modules>
     <module>Customer</module>
-      <module>Restaurant</module>
+    <module>Restaurant</module>
+    <module>Menu</module>
   </modules>
 
   <name>delish-backend</name>

@@ -44,8 +44,6 @@ public class CustomerService {
             id = utility.generateRandomId();
         }
         if(utility.validateEmail(customer.getEmailid())){
-            System.out.println("#########"+customer.getEmailid()+"#########");
-
             Customer customerInfo = Customer.builder()
                     .id(id)
                     .emailid(customer.getEmailid())
@@ -70,7 +68,7 @@ public class CustomerService {
 
     public Optional<Customer> fetchUserInformationComplete(String emailId){
         List<Customer> result = jdbcTemplate.query(
-                "SELECT id, username, phone, emailid FROM customer WHERE emailid=? LIMIT 1",
+                "SELECT id, username, phone, emailid, password FROM customer WHERE emailid=? LIMIT 1",
                 new CustomerRowMapperId(), emailId
         );
 
@@ -97,6 +95,32 @@ public class CustomerService {
 
     }
 
+    public void resetPassword(Customer customer) throws RuntimeException{
+        Customer custInfoRetrievedFromDB = fetchUserInformationComplete(
+                customer.getEmailid())
+                .orElseThrow(()-> new NoSuchElementException("No customer data found"));
+        System.out.println(custInfoRetrievedFromDB.getPassword());
+        if(custInfoRetrievedFromDB.getPassword().equals(customer.getPassword())){
+            throw new DataUnchangedException("New password is same as the old password");
+        }
+        else{
+            try{
+                jdbcTemplate.update("UPDATE customer SET password=? WHERE emailid = ?", customer.getPassword(), customer.getEmailid());
+            }
+            catch (Exception e){
+                e.toString();
+            }
+
+        }
+    }
+
+    public void deleteAccount(Customer customer){
+        Customer customerRetrivedFromDb = fetchUserInformationComplete(customer.getEmailid()).orElseThrow(() -> new NoSuchElementException());
+        if(customer.getEmailid().equals(customerRetrivedFromDb.getEmailid()) && customer.getPassword().equals(customerRetrivedFromDb.getPassword())){
+            jdbcTemplate.update("DELETE FROM customer WHERE emailid=?", customer.getEmailid());
+        }
+    }
+
     public static class CustomerRowMapper implements RowMapper<Customer>{
 
         @Override
@@ -117,7 +141,11 @@ public class CustomerService {
                     .username(rs.getString("username"))
                     .emailid(rs.getString("emailid"))
                     .phone(rs.getString("phone"))
+                    .password(rs.getString("password"))
                     .build();
         }
     }
+
+
+
 }
