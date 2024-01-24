@@ -2,9 +2,7 @@ package com.delish.Menu;
 
 
 
-import org.bson.types.ObjectId;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.delish.Menu.utility.Utility;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,13 +14,29 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final ItemService itemService;
 
+    private Utility utility = new Utility();
+
     public MenuService(MenuRepository menuRepository, ItemService itemService){
         this.menuRepository = menuRepository;
         this.itemService = itemService;
     }
 
-    public ObjectId createMenu(Menu menu){
-        Menu createdMenu = menuRepository.save(menu);
+    public Integer createMenu(Menu menu){
+
+        Menu createdMenu = Menu.builder()
+                .id(getCurrId()+1)
+                .name(menu.getName())
+                .description(menu.getDescription())
+                .build();
+        if(!menu.getItems().isEmpty()){
+            List<Item> modifiedItems = new ArrayList<>();
+            for (Item i : menu.getItems()){
+                i.setMenuId(createdMenu.getId());
+                modifiedItems.add(i);
+            }
+            createdMenu.setItems(modifiedItems);
+        }
+        menuRepository.save(createdMenu);
         return createdMenu.getId();
     }
 
@@ -38,5 +52,14 @@ public class MenuService {
             }
         }
         return searchMatch;
+    }
+
+    public Integer getCurrId(){
+        List<Menu> currMenuList = getAllMenu();
+        Integer currHigh = 0;
+        for (Menu m : currMenuList){
+            if(m.getId() > currHigh) currHigh = m.getId();
+        }
+        return currHigh;
     }
 }

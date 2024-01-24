@@ -11,6 +11,7 @@
         <module name="delish-backend-app" />
         <module name="Menu" />
         <module name="Customer" />
+        <module name="eureka-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

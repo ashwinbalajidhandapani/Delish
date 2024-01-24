@@ -9,15 +9,16 @@ import java.util.List;
 
 
 @Document
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
 @Builder
 public class Menu {
     @Id
-    private ObjectId id;
+    private Integer id;
     private String name;
     private String description;
     private List<Item> items;
+    private Long restaurantid;
+
+
 }

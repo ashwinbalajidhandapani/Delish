@@ -17,9 +17,9 @@ public class MenuController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createMenu(@RequestBody Menu menu){
-        menuService.createMenu(menu);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public MenuIdResponse createMenu(@RequestBody Menu menu){
+        Integer menuId = menuService.createMenu(menu);
+        return new MenuIdResponse(menuId);
     }
 
     @GetMapping

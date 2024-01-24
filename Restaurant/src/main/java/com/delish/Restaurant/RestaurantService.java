@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -17,23 +19,27 @@ import java.util.List;
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final JdbcTemplate jdbcTemplate;
-    private final MenuService menuService;
-    public RestaurantService(RestaurantRepository restaurantRepository, JdbcTemplate jdbcTemplate, MenuService menuService){
+    private final RestTemplate restTemplate;
+    public RestaurantService(RestaurantRepository restaurantRepository, JdbcTemplate jdbcTemplate, RestTemplate restTemplate){
         this.restaurantRepository = restaurantRepository;
         this.jdbcTemplate = jdbcTemplate;
-        this.menuService = menuService;
+        this.restTemplate = restTemplate;
+    }
+
+    public List<Restaurant> getRestaurantList(){
+        return restaurantRepository.findAll();
     }
 
     public void registerRestaurant(Restaurant restaurant) {
         restaurantRepository.saveAndFlush(restaurant);
-        try{
-            Menu suppliedValue = new Menu();
-            String menuId = menuService.createMenu(suppliedValue).toHexString();
-            System.out.println(menuId);
-            jdbcTemplate.update("UPDATE restaurant SET menuId = ? WHERE name=?", menuId, restaurant.getName());
-        }
-        catch (Exception e){
-            throw new RuntimeException(e.toString());
+    }
+
+    public void establishMenu(@RequestParam String restaurantname){
+        for(Restaurant restaurant : getRestaurantList()){
+            if(restaurant.getName().equals(restaurantname)){
+                // Create a Menu
+
+            }
         }
     }
 

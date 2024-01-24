@@ -12,6 +12,7 @@
     <module>Customer</module>
     <module>Restaurant</module>
     <module>Menu</module>
+      <module>eureka-server</module>
   </modules>
 
   <name>delish-backend</name>
