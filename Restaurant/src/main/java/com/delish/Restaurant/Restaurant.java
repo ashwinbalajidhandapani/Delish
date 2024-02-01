@@ -16,13 +16,9 @@ import java.awt.*;
 @AllArgsConstructor
 public class Restaurant {
     @Id
-    @SequenceGenerator(
-            name = "restaurant_id_sequence",
-            sequenceName = "restaurant_id_sequence"
-    )
     private Long id;
     private String name;
     private String address;
     private Boolean isopen;
-    private String menuid;
+    private Integer menuid;
 }

@@ -17,9 +17,9 @@ public class MenuController {
     }
 
     @PostMapping
-    public MenuIdResponse createMenu(@RequestBody Menu menu){
-        Integer menuId = menuService.createMenu(menu);
-        return new MenuIdResponse(menuId);
+    public ResponseEntity<Menu> createMenu(@RequestBody Menu menu){
+        menuService.createMenu(menu);
+        return ResponseEntity.status(HttpStatus.CREATED).body(menu);
     }
 
     @GetMapping
@@ -27,6 +27,10 @@ public class MenuController {
         return menuService.getAllMenu();
     }
 
+    @PostMapping(path = "update_restaurant_info")
+    public Integer createMenuOnlyWithRestaurantId(@RequestParam Long restaurantid){
+        return menuService.createMenuOnlyWithRestaurantId(restaurantid);
+    }
 
 
 }

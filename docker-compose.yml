@@ -24,11 +24,9 @@ services:
     volumes:
       - mongodb-data:/data/db
     networks:
-      - mongo
+      - postgres
 networks:
   postgres:
-    driver: bridge
-  mongo:
     driver: bridge
 volumes:
   postgres_data:

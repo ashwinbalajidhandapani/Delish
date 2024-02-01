@@ -17,19 +17,12 @@ public class ItemService {
     }
 
     public Integer createItem(Item item){
-        if (getCurrentId() == 0){
-            return -1;
-        }
-        Item createdItem = Item.builder()
-                .id(getCurrentId()+1)
-                .name(item.getName())
-                .description(item.getDescription())
-                .price(item.getPrice()).build();
+        Item createdItem = utility.buildItem(item);
         itemRepository.save(createdItem);
         return createdItem.getId();
     }
 
-    public List<Item> displayItems(Long menuid){
+    public List<Item> displayItems(Integer menuid){
         List<Item> resultingItemList = new ArrayList<>();
         for (Item i : itemRepository.findAll()) {
             if(i.getMenuId() == menuid){
@@ -57,4 +50,6 @@ public class ItemService {
             return 0;
         }
     }
+
+
 }

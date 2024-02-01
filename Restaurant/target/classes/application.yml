@@ -18,10 +18,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  mongodb:
-    host: localhost
-    port: 27017
-    database: Menu
-    username: mongouser
-    password: changemeinProd!
-    authentication-database: admin
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+      fetch-registry: true
+      register-with-eureka: true

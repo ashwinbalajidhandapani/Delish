@@ -7,11 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-
-@Document
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Setter
 @Getter
-@Builder
+@Document
 public class Menu {
     @Id
     private Integer id;
@@ -19,6 +20,4 @@ public class Menu {
     private String description;
     private List<Item> items;
     private Long restaurantid;
-
-
 }
